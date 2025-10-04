@@ -387,7 +387,7 @@ class InventoryManager {
                 this.exportData(this.data, 'inventory_all');
                 break;
             case 'exportSelected':
-                const selectedData = this.data.filter(item => this.selectedItems.has(item.ip_address));
+                const selectedData = this.data.filter(item => this.selectedItems.has(item.id));
                 this.exportData(selectedData, 'inventory_selected');
                 break;
             case 'deleteSelected':
@@ -450,7 +450,7 @@ class InventoryManager {
     // Delete Functionality
     deleteSelected() {
         const countBefore = this.data.length;
-        this.data = this.data.filter(item => !this.selectedItems.has(item.ip_address));
+        this.data = this.data.filter(item => !this.selectedItems.has(item.id));
         const deletedCount = countBefore - this.data.length;
         
         this.selectedItems.clear();
