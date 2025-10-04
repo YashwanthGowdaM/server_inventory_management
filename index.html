@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <span class="navbar-brand">
+                <i class="bi bi-server me-2"></i>
+                Inventory Management System
+            </span>
+        </div>
+    </nav>
+
+    <div class="container-fluid py-4">
+        <!-- Toast Container -->
+        <div class="toast-container position-fixed top-0 end-0 p-3">
+            <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <strong class="me-auto" id="toast-title">Notification</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                </div>
+                <div class="toast-body" id="toast-body"></div>
+            </div>
+        </div>
+
+        <!-- Section 1 & 2 Row -->
+        <div class="row mb-4">
+            <!-- Section 1 - Cluster Details -->
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-gear me-2"></i>Section 1: Cluster Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="clusterForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="platform" class="form-label">Platform *</label>
+                                    <select class="form-select" id="platform" required>
+                                        <option value="">Select Platform</option>
+                                        <option value="GemFire">GemFire</option>
+                                        <option value="Kafka">Kafka</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="appName" class="form-label">App Name *</label>
+                                    <input type="text" class="form-control" id="appName" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="clusterName" class="form-label">Cluster Name *</label>
+                                <input type="text" class="form-control" id="clusterName" required>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="environment" class="form-label">Environment *</label>
+                                    <select class="form-select" id="environment" required>
+                                        <option value="">Select Environment</option>
+                                        <option value="dev">dev</option>
+                                        <option value="qa">qa</option>
+                                        <option value="stg">stg</option>
+                                        <option value="uat">uat</option>
+                                        <option value="lab">lab</option>
+                                        <option value="poc">poc</option>
+                                        <option value="prod">prod</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="dataCenter" class="form-label">Data Center *</label>
+                                    <select class="form-select" id="dataCenter" required>
+                                        <option value="">Select Data Center</option>
+                                        <option value="dal">dal</option>
+                                        <option value="phx">phx</option>
+                                        <option value="ua">ua</option>
+                                        <option value="us">us</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2 - Hostname Details -->
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="bi bi-pc-display me-2"></i>Section 2: Hostname Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="hostnameData" class="form-label">Hostname Data *</label>
+                            <textarea class="form-control" id="hostnameData" rows="8" 
+                                placeholder="hostname ip_address service port&#10;server01 192.168.1.100 gemfire 10334&#10;server02 192.168.1.101 gemfire 10334" 
+                                required></textarea>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Format: hostname ip_address service port (one entry per line)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3 - Action Buttons -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="bi bi-lightning me-2"></i>Section 3: Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <button type="button" class="btn btn-primary w-100" id="addToInvBtn">
+                                    <i class="bi bi-plus-circle me-2"></i>Add to INV
+                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="button" class="btn btn-secondary w-100" id="exportAllBtn">
+                                    <i class="bi bi-download me-2"></i>Export All
+                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="button" class="btn btn-warning w-100" id="exportSelectedBtn">
+                                    <i class="bi bi-file-earmark-arrow-down me-2"></i>Export Selected
+                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="button" class="btn btn-danger w-100" id="deleteSelectedBtn">
+                                    <i class="bi bi-trash me-2"></i>Delete Selected
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4 - Search & Filter -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0"><i class="bi bi-search me-2"></i>Section 4: Search & Filter</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-3 mb-2">
+                                <label for="filterPlatform" class="form-label">Platform</label>
+                                <select class="form-select" id="filterPlatform">
+                                    <option value="">All Platforms</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <label for="filterAppName" class="form-label">App Name</label>
+                                <select class="form-select" id="filterAppName">
+                                    <option value="">All Apps</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <label for="filterEnvironment" class="form-label">Environment</label>
+                                <select class="form-select" id="filterEnvironment">
+                                    <option value="">All Environments</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <label for="filterDataCenter" class="form-label">Data Center</label>
+                                <select class="form-select" id="filterDataCenter">
+                                    <option value="">All Data Centers</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-8 mb-2">
+                                <label for="searchInput" class="form-label">Search</label>
+                                <input type="text" class="form-control" id="searchInput" 
+                                    placeholder="Search hostname, IP address, or cluster name...">
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <label class="form-label">&nbsp;</label>
+                                <div class="d-grid">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-primary" id="searchBtn">
+                                            <i class="bi bi-search me-1"></i>Search
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary" id="clearBtn">
+                                            <i class="bi bi-x-circle me-1"></i>Clear
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5 - Results Table -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-table me-2"></i>Section 5: Inventory Results</h5>
+                        <div>
+                            <button type="button" class="btn btn-sm btn-outline-light me-2" id="selectAllBtn">
+                                Select All
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-light" id="deselectAllBtn">
+                                Deselect All
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive" style="max-height: 500px;">
+                            <table class="table table-striped table-hover mb-0">
+                                <thead class="sticky-top bg-light">
+                                    <tr>
+                                        <th scope="col" style="width: 50px;">
+                                            <input type="checkbox" class="form-check-input" id="masterCheckbox">
+                                        </th>
+                                        <th scope="col">Platform</th>
+                                        <th scope="col">App Name</th>
+                                        <th scope="col">Cluster Name</th>
+                                        <th scope="col">Environment</th>
+                                        <th scope="col">Data Center</th>
+                                        <th scope="col">Hostname</th>
+                                        <th scope="col">IP Address</th>
+                                        <th scope="col">Service</th>
+                                        <th scope="col">Port</th>
+                                        <th scope="col">Created Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="inventoryTableBody">
+                                    <tr id="emptyState">
+                                        <td colspan="11" class="text-center py-5 text-muted">
+                                            <i class="bi bi-inbox display-4 d-block mb-2"></i>
+                                            No inventory data found
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmModalTitle">Confirm Action</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="confirmModalBody">
+                    Are you sure you want to proceed?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirmModalOk">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
